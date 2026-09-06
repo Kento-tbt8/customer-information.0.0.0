@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お客様情報入力フォーム</title>
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+  body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", sans-serif; background:#f5f5f5; margin:0; padding:16px; }
+  .card { background:#fff; border-radius:12px; padding:20px; max-width:480px; margin:0 auto; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+  h1 { font-size:18px; margin-bottom:16px; }
+  label { display:block; font-size:13px; color:#555; margin-top:12px; margin-bottom:4px; }
+  input, textarea { width:100%; box-sizing:border-box; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:15px; }
+  button { width:100%; margin-top:20px; padding:12px; background:#06C755; color:#fff; border:none; border-radius:8px; font-size:16px; font-weight:bold; }
+  button:disabled { background:#ccc; }
+  #status { margin-top:12px; font-size:13px; text-align:center; color:#333; }
+  .req { color:#e24b4a; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>お客様情報入力</h1>
+  <form id="form">
+    <label>企業名/氏名 <span class="req">*</span></label>
+    <input type="text" id="name" required>
+
+    <label>フリガナ <span class="req">*</span></label>
+    <input type="text" id="kana" required>
+
+    <label>電話番号 <span class="req">*</span></label>
+    <input type="tel" id="tel" required>
+
+    <label>メールアドレス</label>
+    <input type="email" id="email">
+
+    <label>郵便番号 <span class="req">*</span></label>
+    <input type="text" id="zip" required>
+
+    <label>住所 <span class="req">*</span></label>
+    <input type="text" id="address" required>
+
+    <label>備考</label>
+    <textarea id="memo" rows="3"></textarea>
+
+    <button type="submit" id="submitBtn">送信する</button>
+  </form>
+  <div id="status"></div>
+</div>
+
+<script>
+// ↓ここをLINE Developersで発行したLIFF IDに書き換えてください（例: "1234567890-AbCdEfGh"）
+const LIFF_ID = "2010566917-KbYUOsOS";
+// ↓ここをGASをデプロイして得られるWebアプリURLに書き換えてください
+const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxkeQNA0jx7hSOEXSFZIVR6FhsxxwgUuRnD1CiwODXK8GDWGOiOQEmTQb1WIrnCixtA/exec";
+
+let profile = null;
+
+async function init() {
+  try {
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+    profile = await liff.getProfile();
+  } catch (err) {
+    document.getElementById("status").textContent =
+      "LIFFの初期化に失敗しました。LIFF IDの設定を確認してください。";
+  }
+}
+init();
+
+document.getElementById("form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const btn = document.getElementById("submitBtn");
+  const status = document.getElementById("status");
+
+  if (!profile) {
+    status.textContent = "LINEのプロフィール取得に失敗しました。再度お試しください。";
+    return;
+  }
+
+  btn.disabled = true;
+  status.textContent = "送信中...";
+
+  const payload = {
+    lineUserId: profile.userId,
+    lineDisplayName: profile.displayName,
+    name: document.getElementById("name").value,
+    kana: document.getElementById("kana").value,
+    tel: document.getElementById("tel").value,
+    email: document.getElementById("email").value,
+    zip: document.getElementById("zip").value,
+    address: document.getElementById("address").value,
+    memo: document.getElementById("memo").value,
+  };
+
+  try {
+    // Content-Type: text/plain にすることでGASのCORSプリフライト問題を回避
+    await fetch(GAS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload),
+    });
+    status.textContent = "送信が完了しました。ありがとうございました。";
+    document.getElementById("form").style.display = "none";
+    setTimeout(() => liff.closeWindow(), 1500);
+  } catch (err) {
+    status.textContent = "送信に失敗しました。時間をおいて再度お試しください。";
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
