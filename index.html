@@ -40,6 +40,9 @@
     <label>メールアドレス <span class="req">*</span></label>
     <input type="email" id="email" required>
 
+    <label>住所 <span class="req">*</span></label>
+    <input type="text" id="address" required>
+
     <h2 class="section">◉ 振込先情報</h2>
 
     <label>金融機関名 <span class="req">*</span></label>
@@ -69,7 +72,7 @@
 // ↓ここをLINE Developersで発行したLIFF IDに書き換えてください（例: "1234567890-AbCdEfGh"）
 const LIFF_ID = "2010566917-KbYUOsOS";
 // ↓ここをGASをデプロイして得られるWebアプリURLに書き換えてください
-const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbz-bbZFvX7utG_uIUcncLyGmxgJd7TiCEAzraQvEPI3AUDog7B6ZcFrlG0Sl5WzaP0/exec";
+const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxck0UBHTqtSMOXYn08Gx0f-ZpOcvHLB8c4L17oIBLkvubL5GkuMLnsGO1kiqUfUwaV/exec";
 
 let profile = null;
 
@@ -108,6 +111,7 @@ document.getElementById("form").addEventListener("submit", async function (e) {
     kana: document.getElementById("kana").value,
     tel: document.getElementById("tel").value,
     email: document.getElementById("email").value,
+    address: document.getElementById("address").value,
     bankName: document.getElementById("bankName").value,
     branchName: document.getElementById("branchName").value,
     accountType: document.querySelector('input[name="accountType"]:checked')?.value || "",
