@@ -20,6 +20,10 @@
   .radio-group { display:flex; gap:16px; margin-top:4px; }
   .radio-option { display:flex; align-items:center; gap:6px; font-size:15px; color:#333; margin:0; }
   .radio-option input { width:auto; }
+  .consent { margin-top:20px; }
+  .consent-option { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:#333; line-height:1.6; }
+  .consent-option input { width:auto; margin-top:3px; flex-shrink:0; }
+  .consent-option a { color:#06C755; }
 </style>
 </head>
 <body>
@@ -63,6 +67,13 @@
     <label>口座名義人 <span class="req">*</span></label>
     <input type="text" id="accountHolder" required>
 
+    <div class="consent">
+      <label class="consent-option">
+        <input type="checkbox" id="consent" required>
+        <a href="privacy-policy.html" target="_blank" rel="noopener">個人情報の取り扱いについて</a>に同意する <span class="req">*</span>
+      </label>
+    </div>
+
     <button type="submit" id="submitBtn">送信する</button>
   </form>
   <div id="status"></div>
@@ -72,7 +83,7 @@
 // ↓ここをLINE Developersで発行したLIFF IDに書き換えてください（例: "1234567890-AbCdEfGh"）
 const LIFF_ID = "2010566917-KbYUOsOS";
 // ↓ここをGASをデプロイして得られるWebアプリURLに書き換えてください
-const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyQbn-JlXCfae_HsxRJcC2OeJ1-LnUF9HognH9UCp7FaTm3S5kTU1mO0XHZ8A9KfEzS/exec";
+const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycby4NG35Jh9LFRd8H3R5mlgqzWgNq7n6VRJNJdqtpyc3cyR-H43BjpXcu8e1i1HIJi9j/exec";
 
 let profile = null;
 
